@@ -1,0 +1,45 @@
+.contactInfo{
+    margin: 20px 90px;
+    width: 540px;
+}
+.nameBar{
+    display: flex;
+    justify-content: space-between;
+}
+#detailedName{
+    font-weight: normal;
+}
+.center{
+    display: flex;
+    flex-direction: column;
+    justify-content:flex-end;
+}
+.modifyBar{
+    width:170px;
+    display: flex;
+    justify-content: space-between;
+}
+.modify{
+    display: flex;
+}
+.modify:hover{
+    cursor: pointer;
+}
+.editSymbol{
+    width: 15px;
+    height: 15px;
+    margin: auto;
+}
+.deleteSymbol{
+    width: 20px;
+    height: 25px;
+    margin: auto;
+}
+.btn{
+    margin-left: 5px;
+}
+.content{
+    margin-top: 15px;
+    display: flex;
+    font-size: 17px;
+}

@@ -1,0 +1,50 @@
+.App{
+  margin:0;
+  width:100%;
+}
+.contacts{
+  display: flex;
+  padding: 20px;
+  font-family:'Leelawadee UI';
+  color: rgb(83, 83, 83);
+  text-shadow: 0px 0px 1px;
+}
+h1{
+  margin: 0px;
+  font-weight: lighter;
+}
+p{
+  margin: 0px ;
+}
+pre{
+  margin: 0px;
+  font-family: 'Leelawadee UI';
+}
+textarea{
+  height: 45px;
+  border-color:#919191;
+  border-width: 2px;
+  font-size: 20px;
+  border-style: solid;
+  width: 100%;
+  resize: none;
+}
+input{
+  height: 45px;
+  border-color:#919191;
+  border-width: 2px;
+  font-size: 20px;
+  border-style: solid;
+  width: 80%;
+}
+/* form{
+  padding-top: 20px;
+} */
+td{
+  width: 275px;
+  padding-left: 20px;
+}
+a{
+  color: black;
+  text-decoration: none;
+}

@@ -1,0 +1,52 @@
+.addForm {
+    width: 750px;
+    height: 600px;
+    margin: 20px 40px;
+    box-shadow: 0px 0px 25px;
+    padding: 30px;
+    padding-bottom: 0px;
+}
+label{
+    display: block;
+}
+.inputField {
+    margin: 5px;
+}
+.smallInputField{
+    width: 100%;
+}
+.submitField{
+    margin-left: 80%;
+    width: 20%;
+}
+.error {
+    font-size: 12px;
+    color: red;
+}
+.smallField{
+    display: grid;
+    grid-template-columns: 38% 38%;
+    column-gap: 4%;
+}
+
+.address {
+    height: 110px;
+    border-color: #919191;
+    border-width: 2px;
+    font-size: 20px;
+    border-style: solid;
+    width: 80%;
+}
+
+.addbtn {
+    height: 40px;
+    background-color: #468c00;
+    border-width: 0px;
+    color: white;
+    font-size: 18px;
+    margin: 0px;
+}
+
+.addbtn:hover {
+    cursor: pointer;
+}
