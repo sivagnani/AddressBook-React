@@ -1,5 +1,5 @@
 export interface INavBarProps{
-    onClick:(b:boolean)=>void;
+    onNavClick:(b:boolean)=>void;
     activePage:boolean;
 }
 export interface INavBarState{

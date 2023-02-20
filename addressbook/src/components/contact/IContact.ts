@@ -6,5 +6,4 @@ export interface IContactProps{
     onClick:()=>void;
 }
 export interface IContactState{
-    class:string;
 }

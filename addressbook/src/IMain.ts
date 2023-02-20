@@ -1,12 +1,12 @@
 import { Contact } from "./model"
-export interface IAppState{
+export interface IRouterState{
     contactList: Contact[];
     activeContact:Contact;
     showContactInfo:boolean;
     showForm:boolean;
-    initialPage:boolean;
+    isInitialPage:boolean;
     editForm:boolean
 }
-export interface IAppProps{
+export interface IRouterProps{
     
 }

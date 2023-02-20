@@ -1,16 +1,7 @@
 import "./contact.css";
 import { IContactProps,IContactState} from "./IContact";
 import React from "react";
-export default class EachContact extends React.Component<IContactProps,IContactState>{
-    constructor(props:IContactProps){
-        super(props);
-        this.state={
-            class:"eachContactSummary"
-        }
-    }
-    setActive(){
-        this.setState({class:"eachContactSummary active"});
-    }
+export default class Contact extends React.Component<IContactProps,IContactState>{
     render(): React.ReactNode {
         return(
             <div className={this.props.class} onClick={()=>{

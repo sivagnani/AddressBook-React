@@ -1,37 +1,34 @@
-export function validate(type:string,input:string) {
-    const name = /^[a-zA-Z\s]{4,256}$/;
-    const mail = /^[a-zA-Z0-9.$_*]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9.]{2,}$/;
-    const mobile = /^[\+]+[0-9]{2,3}[\s]?[0-9]{3}[\s]?[0-9]{5,7}$/;
-    const landline = /^[0][0-9]{2,3}[\s]?[0-9]{3,4}[\s]?[0-9]{4}$/;
-    const webiste = /^([https|http]:)?\/?\/?(www.)+[a-zA-Z0-9#!:?+=&%!.\-\/]+\.([a-zA-Z]+){2,}$/;
-    let validRegExp=/.*/;
-    switch(type){
+import { Contact } from "../../model";
+const emptyString=" \xa0 ";
+export function validate(type: string, input: string):string {
+    switch (type) {
         case "name":
-            validRegExp=name;
-            break;
+            return validateName(input);
         case "email":
-            validRegExp=mail;
-            break;
+            return validateMail(input);
         case "mobile":
-            validRegExp=mobile;
-            break;
+            return validateMobile(input);
         case "landline":
-            validRegExp=landline;
-            break;
+            return validateLandline(input);
         case "website":
-            validRegExp=webiste;
-            break;
+            return validateWebsite(input);
+        case "address":
+            return validateAddress(input);
     }
-    if (required(input)) {
-        let error;
-        if (input.match(validRegExp)) {
-            return true;
-        }
-    }
-    return false;
-
+    return "error";
 }
-function required(text:string) {
+export function validateForm(contact:Contact){
+    let nameValidation=validateName(contact.name)===emptyString;
+    let mobileValidation=validateMobile(contact.mobile)===emptyString;
+    let mailValidation=validateMail(contact.email)===emptyString;
+    let landlineValidation=validateLandline(contact.landline)===emptyString;
+    let websiteValidation=validateWebsite(contact.website)===emptyString;
+    let addressValidation=validateAddress(contact.address)===emptyString;
+    console.log(nameValidation,mailValidation,mobileValidation,addressValidation,landlineValidation,websiteValidation);
+    console.log(nameValidation && mobileValidation && mailValidation && landlineValidation && websiteValidation && addressValidation);   
+    return(nameValidation && mobileValidation && mailValidation && landlineValidation && websiteValidation && addressValidation);   
+}
+function required(text: string) {
     if (text == "") {
         return false;
     }
@@ -39,13 +36,40 @@ function required(text:string) {
         return true;
     }
 }
-let valid = {
-    name: /^[a-zA-Z\s]{4,256}$/,
-    mail: /^[a-zA-Z0-9.$_*]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9.]{2,}$/,
-    mobile: /^[\+]+[0-9]{2,3}[\s]?[0-9]{3}[\s]?[0-9]{5,7}$/,
-    landline: /^[0][0-9]{2,3}[\s]?[0-9]{3,4}[\s]?[0-9]{4}$/,
-    webiste: /^([https|http]:)?\/?\/?(www.)+[a-zA-Z0-9#!:?+=&%!.\-\/]+\.([a-zA-Z]+){2,}$/,
+function validateName(input: string) {
+    const validname = /^[a-zA-Z\s]{4,256}$/;
+    return(required(input)
+        ?(input.match(validname)?emptyString:"Enter valid name")
+        :"Please Enter name")
 }
+function validateMail(input: string) {
+    const mail = /^[a-zA-Z0-9.$_*]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9.]{2,}$/;
+    return(required(input)
+        ?(input.match(mail)?emptyString:"Enter valid email")
+        :"Please Enter email")
+}
+function validateMobile(input: string) {
+    const mobile = /^[\+]+[0-9]{2,3}[\s]?[0-9]{3}[\s]?[0-9]{5,7}$/;
+    return(required(input)
+        ?(input.match(mobile)?emptyString:"Enter valid mobile number")
+        :"Please Enter mobile number")
+}
+function validateLandline(input: string) {
+    const landline = /^[0][0-9]{2,3}[\s]?[0-9]{3,4}[\s]?[0-9]{4}$/;
+    return(required(input)
+        ?(input.match(landline)?emptyString:"Enter valid landline")
+        :"Please Enter landline")
+}
+function validateWebsite(input: string) {
+    const website = /^(https?:\/\/)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/i;
+    return(required(input)
+        ?(input.match(website)?emptyString:"Enter valid website")
+        :"Please Enter website")
+}
+function validateAddress(input:string){
+    return(required(input)?emptyString:"Please enter Address");
+}
+
 // function validate(reg, id, input) {
 //     if (required(input)) {
 //         if (input.match(reg)) {
