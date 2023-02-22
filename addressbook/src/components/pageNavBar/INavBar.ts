@@ -3,6 +3,5 @@ export interface INavBarProps{
     activePage:boolean;
 }
 export interface INavBarState{
-    home:boolean;
-    add:boolean;
+    
 }

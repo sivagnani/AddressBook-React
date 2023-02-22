@@ -1,4 +1,4 @@
-import { Contact } from "./model"
+import { Contact } from "../../model"
 export interface IRouterState{
     contactList: Contact[];
     activeContact:Contact;

@@ -1,99 +1,133 @@
 import React from "react";
 import "./contactForm.css";
-import { Contact } from "../../model";
 import { IContactFormProps, IContactFormState } from "./IContactForm";
 import { emptyContact } from "../../constants";
 import { validate, validateForm } from "./validations";
+import { Contact } from "../../model";
 export default class ContactForm extends React.Component<IContactFormProps, IContactFormState>{
+    private errorRef=React.createRef<HTMLHeadingElement>();
     constructor(props: IContactFormProps) {
         super(props);
         this.state = {
-            id: props.contact.id,
-            name: props.contact.name,
-            email: props.contact.email,
-            mobile: props.contact.mobile,
-            landline: props.contact.landline,
-            website: props.contact.website,
-            address: props.contact.address,
+            contact:props.contact,
             nameError: "\xa0",
             mobileError: "\xa0",
             emailError: "\xa0",
             landlineError: "\xa0",
             websiteError: "\xa0",
             addressError: "\xa0",
-            formError: true,
+            formError: "\xa0",
             isAdd:!props.action,
         }
     }
-    extractContact() {
-        let newContact={id:this.state.id,name:this.state.name,email:this.state.email,mobile:this.state.mobile,landline:this.state.landline,website:this.state.website,address:this.state.address};
-        let validForm=validateForm(newContact);
-        this.setState({formError:validForm});
-        if(validForm){
-            return newContact;
-        }
-        return emptyContact;
+    moveToTop(){
+        this.errorRef.current?.scrollIntoView({ behavior: 'smooth' });
+        window.scrollTo({
+            top: 0,
+            behavior: "smooth"
+          });
+    }
+    extractDetailsFromForm() {
+        let newContact:Contact= this.state.contact;
+        return newContact;
+    }
+    validate(){
+        let newContact:Contact=this.state.contact;
+        let error:string=(validateForm(newContact));
+        this.setState({formError:error},
+            ()=>{
+                return (this.state.formError===" \xa0 ") && this.props.operation(newContact)
+        });
+        this.moveToTop();
     }
     handleInputChange(event: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLTextAreaElement>) {
-        let id=event.target.id;
-        let value=event.target.value;
+        let id:string=event.target.id;
+        let value:string=event.target.value;
         let error: string = validate(id,value);
+        let duplicateContact:Contact={...this.state.contact}
+        let errorMessage:string;
         switch (id) {
             case "name":
-                this.setState({ nameError: error,name:value });
+                duplicateContact.name=value;
+                errorMessage=validateForm(duplicateContact);
+                this.setState({ 
+                    nameError: error,
+                    contact:duplicateContact,
+                    formError:errorMessage
+                });
                 break;
             case "email":
-                this.setState({ emailError: error,email:value });
+                duplicateContact.email=value;
+                errorMessage=validateForm(duplicateContact);
+                this.setState({
+                     emailError: error,
+                     contact:duplicateContact,
+                     formError:errorMessage
+                    });
                 break;
             case "mobile":
-                this.setState({ mobileError: error,mobile:value });
+                duplicateContact.mobile=value;
+                errorMessage=validateForm(duplicateContact);
+                this.setState({ 
+                    mobileError: error,
+                    contact:duplicateContact,
+                    formError:errorMessage
+                });
                 break;
             case "landline":
-                this.setState({ landlineError: error,landline:value});
+                duplicateContact.landline=value;
+                errorMessage=validateForm(duplicateContact);
+                this.setState({ 
+                    landlineError: error,
+                    contact:duplicateContact,
+                    formError:errorMessage
+                });
                 break;
             case "website":
-                this.setState({ websiteError: error,website:value });
+                duplicateContact.website=value;
+                errorMessage=validateForm(duplicateContact);
+                this.setState({ 
+                    websiteError: error,
+                    contact:duplicateContact,
+                    formError:errorMessage
+                });
                 break;
             case "address":
-                this.setState({ addressError: error,address:value});
+                duplicateContact.address=value;
+                errorMessage=validateForm(duplicateContact);
+                this.setState({ 
+                    addressError: error,
+                    contact:duplicateContact,
+                    formError:errorMessage
+                });
                 break;
         }
     }
     resetForm(){
         this.setState({
-            id:this.props.contact.id,
-            name:this.props.contact.name,
-            email:this.props.contact.email,
-            mobile:this.props.contact.mobile,
-            landline:this.props.contact.landline,
-            website:this.props.contact.website,
-            address:this.props.contact.address,
+            contact:this.props.contact,
             nameError: "\xa0",
             mobileError: "\xa0",
             emailError: "\xa0",
             landlineError: "\xa0",
             websiteError: "\xa0",
             addressError: "\xa0",
-            formError: true,
+            formError: "\xa0",
             isAdd:!this.props.action,
         });
+        this.moveToTop();
     }
     componentDidUpdate(prevProps:IContactFormProps) {
         if (prevProps !== this.props) {
           this.setState({ 
-            name: this.props.contact.name,
-            email: this.props.contact.email,
-            mobile: this.props.contact.mobile,
-            landline: this.props.contact.landline,
-            website: this.props.contact.website,
-            address: this.props.contact.address,
+            contact:this.props.contact,
             nameError: "\xa0",
             mobileError: "\xa0",
             emailError: "\xa0",
             landlineError: "\xa0",
             websiteError: "\xa0",
             addressError: "\xa0",
-            formError: true,
+            formError: "\xa0",
             isAdd:!this.props.action,
          });
         }
@@ -103,44 +137,44 @@ export default class ContactForm extends React.Component<IContactFormProps, ICon
             <div className="addForm">
                 <form className="detailsForm">
                     <div className="formHeader">
-                        <h3 className="formError">{this.state.formError?"\xa0":"Enter valid Inputs"}</h3>
+                        <h3 className="formError" id="formError" ref={this.errorRef}>{this.state.formError}</h3>
                         <img alt="" className="closeIcon" src={require("../../assets/close.png")} onClick={()=>this.props.close()}/>
                     </div>
                     <div className="inputField">
                         <label>Name <sup>*</sup></label>
-                        <input type="text" id="name" onChange={(event) => this.handleInputChange(event)} value={this.state.name}/>
+                        <input type="text" id="name" onChange={(event) => this.handleInputChange(event)} value={this.state.contact.name}/>
                         <p className="error">{this.state.nameError}</p>
                     </div>
                     <div className="inputField">
                         <label>Email <sup>*</sup></label>
-                        <input type="text" id="email" onChange={(event) => this.handleInputChange(event)} value={this.state.email}/>
+                        <input type="text" id="email" onChange={(event) => this.handleInputChange(event)} value={this.state.contact.email}/>
                         <p className="error">{this.state.emailError}</p>
                     </div>
                     <div className="inputField smallField">
                         <div className="smallInputField">
                             <label>Mobile <sup>*</sup></label>
-                            <input className="smallInputField" type="text" id="mobile" onChange={(event) => this.handleInputChange(event)} value={this.state.mobile} />
+                            <input className="smallInputField" type="text" id="mobile" onChange={(event) => this.handleInputChange(event)} value={this.state.contact.mobile} />
                             <p className="error">{this.state.mobileError}</p>
                         </div>
                         <div className="smallInputField">
                             <label>Landline <sup>*</sup></label>
-                            <input className="smallInputField" type="text" id="landline" onChange={(event) => this.handleInputChange(event)} value={this.state.landline}/>
+                            <input className="smallInputField" type="text" id="landline" onChange={(event) => this.handleInputChange(event)} value={this.state.contact.landline}/>
                             <p className="error">{this.state.landlineError}</p>
                         </div>
                     </div>
                     <div className="inputField">
                         <label>Website <sup>*</sup></label>
-                        <input type="text" id="website" onChange={(event) => this.handleInputChange(event) } value={this.state.website}/>
+                        <input type="text" id="website" onChange={(event) => this.handleInputChange(event) } value={this.state.contact.website}/>
                         <p className="error">{this.state.websiteError}</p>
                     </div>
                     <div className="inputField">
                         <label>Address <sup>*</sup></label>
-                        <textarea className="address" id="address" onChange={(event) => this.handleInputChange(event)} value={this.state.address}></textarea>
+                        <textarea className="address" id="address" onChange={(event) => this.handleInputChange(event)} value={this.state.contact.address}></textarea>
                         <p className="error">{this.state.addressError}</p>
                     </div>
                     <div className="submitField">
                         <input type="button" className="addbtn" value="Reset" onClick={()=>this.resetForm()} />
-                        <input type="button" className="addbtn" value={this.state.isAdd?"Add":"Update"} onClick={this.state.isAdd?()=>this.props.add(this.extractContact()):()=>this.props.edit(this.extractContact())}/>
+                        <input type="button" className="addbtn" value={this.state.isAdd?"Add":"Update"} onClick={()=>this.validate()}/>
                     </div>
                 </form>
             </div>

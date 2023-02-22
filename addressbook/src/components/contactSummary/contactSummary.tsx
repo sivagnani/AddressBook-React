@@ -1,12 +1,15 @@
 import React from "react";
 import "./contactSummary.css";
-import Contact from "../contact/contact";
+import ContactCard from "../contactCard/contactCard";
 import { IContactSummaryProps, IContactSummaryState } from "./IContactSummary";
-export default class ContactSummary extends React.Component<IContactSummaryProps,IContactSummaryState>{
-    render(){
-        return<div className="contactSummary" id="summary">
-        <p className="contact">CONTACTS</p>
-        {this.props.contactList.map((contact)=><Contact key={contact.id} class={contact.id===this.props.activeContact.id?"eachContactSummary active":"eachContactSummary"} name={contact.name} email={contact.email} mobile={contact.mobile} onClick={()=>{this.props.onContactClick(contact.id)}}/>)}
-    </div>;
+export default class ContactSummary extends React.Component<IContactSummaryProps, IContactSummaryState>{
+    render() {
+        return <div className="contactSummary" id="summary">
+            <p className="contact">CONTACTS</p>
+            {this.props.contactList.map((contact) => {
+                return <ContactCard key={contact.id} class={contact.id === this.props.activeContactId ? "eachContactSummary active" : "eachContactSummary"} contact={contact} onCardClick={() => { this.props.onContactClick(contact.id) }} />;
+            })
+            }
+        </div>;
     }
 }

@@ -4,17 +4,17 @@ import { IContactInfoProps, IContactInfoState } from "./IContactInfo";
 export default class ContactInfo extends React.Component<IContactInfoProps, IContactInfoState>{
     render() {
         return (<div className="contactInfo">
-            <div className="nameBar">
-                <h1 >{this.props.activeContact.name}</h1>
+            <div className="nameSection">
+                <h1 className="name">{this.props.activeContact.name}</h1>
                 <div className="center">
-                    <div className="modifyBar">
+                    <div className="modifySection">
                         <div className="modify" onClick={() => this.props.edit()}>
                             <img alt="" className="editSymbol" src={require("../../assets/edit1.jpg")} />
-                            <a className="btn">EDIT</a>
+                            <p className="btn">EDIT</p>
                         </div>
                         <div className="modify" onClick={() => this.props.delete(this.props.activeContact.id)}>
                             <img alt="" className="deleteSymbol" src={require("../../assets/delete2.png")} />
-                            <a className="btn">DELETE</a>
+                            <p className="btn">DELETE</p>
                         </div>
                     </div>
                 </div>

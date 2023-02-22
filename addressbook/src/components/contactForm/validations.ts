@@ -18,18 +18,13 @@ export function validate(type: string, input: string):string {
     return "error";
 }
 export function validateForm(contact:Contact){
-    let nameValidation=validateName(contact.name)===emptyString;
-    let mobileValidation=validateMobile(contact.mobile)===emptyString;
-    let mailValidation=validateMail(contact.email)===emptyString;
-    let landlineValidation=validateLandline(contact.landline)===emptyString;
-    let websiteValidation=validateWebsite(contact.website)===emptyString;
-    let addressValidation=validateAddress(contact.address)===emptyString;
-    console.log(nameValidation,mailValidation,mobileValidation,addressValidation,landlineValidation,websiteValidation);
-    console.log(nameValidation && mobileValidation && mailValidation && landlineValidation && websiteValidation && addressValidation);   
-    return(nameValidation && mobileValidation && mailValidation && landlineValidation && websiteValidation && addressValidation);   
+    let errors:string[]=[validateName(contact.name),validateMobile(contact.mobile),validateMail(contact.email),validateLandline(contact.landline),validateWebsite(contact.website),validateAddress(contact.address)];
+    let emptyErrorMessage:string[]=errors.filter((message)=>message.slice(0,6)==="Please");
+    let invalidErrorMessage:string[]=errors.filter((message)=>message.slice(0,5)==="Enter");
+    return (emptyErrorMessage.length!==0)?"Please fill all inputs":(invalidErrorMessage.length!==0)?"Enter valid inputs":emptyString;
 }
 function required(text: string) {
-    if (text == "") {
+    if (text === "") {
         return false;
     }
     else {

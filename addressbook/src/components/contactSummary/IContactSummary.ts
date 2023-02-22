@@ -2,7 +2,7 @@ import { Contact } from "../../model";
 export interface IContactSummaryProps{
     contactList:Contact[];
     onContactClick:(id:string)=>void;
-    activeContact:Contact;
+    activeContactId:string;
 }
 export interface IContactSummaryState{
     

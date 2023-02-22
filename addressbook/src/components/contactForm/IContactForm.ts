@@ -2,24 +2,17 @@ import { Contact } from "../../model";
 export interface IContactFormProps{
     contact:Contact;
     action:boolean;
-    add:(contact:Contact)=>void;
-    edit:(newContact:Contact)=>void;
+    operation:(contact:Contact)=>void;
     close:()=>void;
 }
 export interface IContactFormState{
-    id:string,
-    name:string,
-    email:string,
-    mobile:string,
-    landline:string,
-    website:string,
-    address:string
+    contact:Contact;
     nameError:string;
     mobileError:string;
     emailError:string;
     landlineError:string;
     websiteError:string;
     addressError:string;
-    formError:boolean;
-    isAdd:boolean
+    formError:string;
+    isAdd:boolean,
 }
