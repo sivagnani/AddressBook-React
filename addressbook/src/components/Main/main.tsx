@@ -9,6 +9,7 @@ import { IRouterProps,IRouterState } from './IMain';
 import { Contact } from '../../model';
 import { getContactById,deleteContactById,insertContact,updateContact} from '../../services/services';
 import { initialContacts,emptyContact } from '../../constants';
+import {  Route, Routes, useNavigate } from 'react-router-dom';
 class Main extends React.Component<IRouterProps,IRouterState>{
   constructor(props:IRouterProps){
     super(props);
@@ -45,6 +46,7 @@ class Main extends React.Component<IRouterProps,IRouterState>{
       contactList:contactsAfterDelete,
       showContactInfo:false
     });
+    this.props.navigate("/");
   }
   handleEdit(){
     this.setState({
@@ -62,6 +64,7 @@ class Main extends React.Component<IRouterProps,IRouterState>{
         showForm:false,
         showContactInfo:true
       });
+    this.props.navigate("/details/"+contactsAfterAdd[contactsAfterAdd.length-1].id);
   }
   editContact(newContact:Contact){
     let contactsAfterUpdating:Contact[]=updateContact(newContact,this.state.contactList);
@@ -71,32 +74,44 @@ class Main extends React.Component<IRouterProps,IRouterState>{
       showForm:false,
       showContactInfo:true
     });
+    this.props.navigate("/details/"+newContact.id);
   }
-  handleFormClose(){
-    (this.state.activeContact===emptyContact)
-    ?this.handleForm(false)
-    :this.handleTileClick(this.state.activeContact.id);
-  }
+  // handleFormClose(){
+  //   (this.state.activeContact===emptyContact)
+  //   ?this.handleForm(false)
+  //   :this.handleTileClick(this.state.activeContact.id);
+  // }
   handleFormOperation(contact:Contact){
     (this.state.editForm)
     ?this.editContact(contact)
     :this.addContact(contact);
   }
+  // componentDidMount() {
+  //   const { match } = this.props;
+  //   const { productId } = match.params;
+  //   this.setState({ productId });
+  // }
+
   render(): React.ReactNode {
     return (
-      <div className="Router">
+      <div className="mainPage">
         <div>
           <AddressHeader/>
-          <NavBar activePage={this.state.isInitialPage} onNavClick={(isAddForm:boolean)=>this.handleForm(isAddForm)}/>
+          <NavBar onNavClick={(isAddForm:boolean)=>this.handleForm(isAddForm)}/>
         </div>
         <div className='contacts'>
-          <ContactSummary contactList={this.state.contactList} activeContactId={this.state.activeContact.id} onContactClick={(id:string)=>this.handleTileClick(id)}/>
-          {this.state.showContactInfo && <ContactInfo edit={()=>this.handleEdit()} delete={(id:string)=>this.deleteContact(id)} activeContact={this.state.activeContact}/>}
-          {this.state.showForm && <ContactForm action={this.state.editForm} contact={this.state.activeContact} close={()=>this.handleFormClose()} operation={(contact:Contact)=>this.handleFormOperation(contact)}/>}
-        </div>      
+          <ContactSummary contactList={this.state.contactList}/>
+          <Routes>
+          <Route path={"/details/:id"} element={ <ContactInfo contactList={this.state.contactList} edit={()=>this.handleEdit()} delete={(id:string)=>this.deleteContact(id)}/>}/>
+          <Route path={"/add/:id"} element={<ContactForm contactList={this.state.contactList} action={this.state.editForm} contact={this.state.activeContact} operation={(contact:Contact)=>this.handleFormOperation(contact)}/>}/>
+          </Routes>
+        </div>    
       </div>
     );
   }
 }
-
+export function APPWithRouter(){
+  const navigate=useNavigate();
+  return(<Main navigate={navigate}></Main>)
+}
 export default Main;

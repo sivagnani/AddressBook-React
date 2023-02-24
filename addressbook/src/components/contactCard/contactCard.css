@@ -1,4 +1,11 @@
-.eachContactSummary{
+.activeCard>.eachContactSummary{
+    border-width: 0.5px;
+    border-color: #d0d0d0;
+    border-style: solid;
+    padding: 5px 10px;
+    background-color: #cee7f2;
+}
+.inActiveCard>.eachContactSummary{
     border-width: 0.5px;
     border-color: #d0d0d0;
     border-style: solid;
@@ -11,6 +18,6 @@
 .Name{
     font-weight:lighter;
 }
-.active{
-    background-color: #cee7f2;
+.details{
+    font-weight: lighter;
 }

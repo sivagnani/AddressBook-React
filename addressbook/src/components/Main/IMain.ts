@@ -1,3 +1,4 @@
+import { NavigateFunction } from "react-router";
 import { Contact } from "../../model"
 export interface IRouterState{
     contactList: Contact[];
@@ -8,5 +9,5 @@ export interface IRouterState{
     editForm:boolean
 }
 export interface IRouterProps{
-    
+    navigate:NavigateFunction;
 }

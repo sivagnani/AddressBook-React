@@ -1,9 +1,10 @@
 import { Contact } from "../../model";
 export interface IContactFormProps{
+    contactList:Contact[];
     contact:Contact;
     action:boolean;
+    params:{id:string};
     operation:(contact:Contact)=>void;
-    close:()=>void;
 }
 export interface IContactFormState{
     contact:Contact;
@@ -14,5 +15,7 @@ export interface IContactFormState{
     websiteError:string;
     addressError:string;
     formError:string;
-    isAdd:boolean,
+    isAdd:boolean;
+    shouldValidate:boolean;
+    isMounted:boolean;
 }
