@@ -30,7 +30,7 @@ export let initialContacts:Contact[]=[
     website:"www.technovert.com",
     address:"123 now here\nSome street\nMadhapur, Hyderabad 500033"}
     ]
-    export let emptyContact:Contact={
+export let emptyContact:Contact={
     id:"",
     name:"",
     email:"",
@@ -38,5 +38,5 @@ export let initialContacts:Contact[]=[
     landline:"",
     website:"",
     address:"",
-    }
+}
     

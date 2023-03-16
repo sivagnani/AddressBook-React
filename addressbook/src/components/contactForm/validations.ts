@@ -1,29 +1,64 @@
 import { Contact } from "../../model";
-const emptyString=" \xa0 ";
-export function validate(type: string, input: string):string {
+export default class Validation{
+    emptyString:string =" \xa0 ";
+    validate(type: string, input: string):string {
     switch (type) {
         case "name":
-            return validateName(input);
+            return this.validateName(input);
         case "email":
-            return validateMail(input);
+            return this.validateMail(input);
         case "mobile":
-            return validateMobile(input);
+            return this.validateMobile(input);
         case "landline":
-            return validateLandline(input);
+            return this.validateLandline(input);
         case "website":
-            return validateWebsite(input);
+            return this.validateWebsite(input);
         case "address":
-            return validateAddress(input);
+            return this.validateAddress(input);
     }
     return "error";
 }
-export function validateForm(contact:Contact){
-    let errors:string[]=[validateName(contact.name),validateMobile(contact.mobile),validateMail(contact.email),validateLandline(contact.landline),validateWebsite(contact.website),validateAddress(contact.address)];
+validateForm(contact:Contact){
+    let errors:string[]=[this.validateName(contact.name),this.validateMobile(contact.mobile),this.validateMail(contact.email),this.validateLandline(contact.landline),this.validateWebsite(contact.website),this.validateAddress(contact.address)];
     let emptyErrorMessage:string[]=errors.filter((message)=>message.slice(0,6)==="Please");
     let invalidErrorMessage:string[]=errors.filter((message)=>message.slice(0,5)==="Enter");
-    return (emptyErrorMessage.length!==0)?"Please fill all inputs":(invalidErrorMessage.length!==0)?"Enter valid inputs":emptyString;
+    return (emptyErrorMessage.length!==0)?"Please fill all inputs":(invalidErrorMessage.length!==0)?"Enter valid inputs":this.emptyString;
 }
-function required(text: string) {
+
+validateName(input: string) {
+    const validname = /^[a-zA-Z\s]{4,256}$/;
+    return(this.required(input)
+        ?(input.match(validname)?this.emptyString:"Enter valid name")
+        :"Please Enter name")
+}
+validateMail(input: string) {
+    const mail = /^[a-zA-Z0-9.$_*]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9.]{2,}$/;
+    return(this.required(input)
+        ?(input.match(mail)?this.emptyString:"Enter valid email")
+        :"Please Enter email")
+}
+validateMobile(input: string) {
+    const mobile = /^[\+]+[0-9]{2,3}[\s]?[0-9]{3}[\s]?[0-9]{5,7}$/;
+    return(this.required(input)
+        ?(input.match(mobile)?this.emptyString:"Enter valid mobile number")
+        :"Please Enter mobile number")
+}
+validateLandline(input: string) {
+    const landline = /^[0][0-9]{2,3}[\s]?[0-9]{3,4}[\s]?[0-9]{4}$/;
+    return(this.required(input)
+        ?(input.match(landline)?this.emptyString:"Enter valid landline")
+        :"Please Enter landline")
+}
+validateWebsite(input: string) {
+    const website = /^(https?:\/\/)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/i;
+    return(this.required(input)
+        ?(input.match(website)?this.emptyString:"Enter valid website")
+        :"Please Enter website")
+}
+validateAddress(input:string){
+    return(this.required(input)?this.emptyString:"Please enter Address");
+}
+required(text: string) {
     if (text === "") {
         return false;
     }
@@ -31,42 +66,11 @@ function required(text: string) {
         return true;
     }
 }
-function validateName(input: string) {
-    const validname = /^[a-zA-Z\s]{4,256}$/;
-    return(required(input)
-        ?(input.match(validname)?emptyString:"Enter valid name")
-        :"Please Enter name")
-}
-function validateMail(input: string) {
-    const mail = /^[a-zA-Z0-9.$_*]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9.]{2,}$/;
-    return(required(input)
-        ?(input.match(mail)?emptyString:"Enter valid email")
-        :"Please Enter email")
-}
-function validateMobile(input: string) {
-    const mobile = /^[\+]+[0-9]{2,3}[\s]?[0-9]{3}[\s]?[0-9]{5,7}$/;
-    return(required(input)
-        ?(input.match(mobile)?emptyString:"Enter valid mobile number")
-        :"Please Enter mobile number")
-}
-function validateLandline(input: string) {
-    const landline = /^[0][0-9]{2,3}[\s]?[0-9]{3,4}[\s]?[0-9]{4}$/;
-    return(required(input)
-        ?(input.match(landline)?emptyString:"Enter valid landline")
-        :"Please Enter landline")
-}
-function validateWebsite(input: string) {
-    const website = /^(https?:\/\/)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/i;
-    return(required(input)
-        ?(input.match(website)?emptyString:"Enter valid website")
-        :"Please Enter website")
-}
-function validateAddress(input:string){
-    return(required(input)?emptyString:"Please enter Address");
 }
 
+
 // function validate(reg, id, input) {
-//     if (required(input)) {
+//     if (this.required(input)) {
 //         if (input.match(reg)) {
 //             convertToHTMLElement(getElement(id)).innerHTML = "&nbsp;";
 //             return true;
@@ -77,11 +81,11 @@ function validateAddress(input:string){
 //         }
 //     }
 //     else {
-//         convertToHTMLElement(getElement(id)).innerHTML = "Input is required";
+//         convertToHTMLElement(getElement(id)).innerHTML = "Input is this.required";
 //         return false;
 //     }
 // }
-// function validateName() {
+// function this.validateName() {
 //     let name = convertToInputElement(getElement('newName')).value;
 //     const validname = /^[a-zA-Z\s]{4,256}$/;
 //     return validate(validname, 'nameError', name);
@@ -91,38 +95,38 @@ function validateAddress(input:string){
 //     const mail = /^[a-zA-Z0-9.$_*]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9.]{2,}$/;
 //     return validate(mail, 'emailError', email);
 // }
-// function validateMobile() {
+// function this.validateMobile() {
 //     let mobile = convertToInputElement(getElement('newMobile')).value;
 //     const valid = /^[\+]+[0-9]{2,3}[\s]?[0-9]{3}[\s]?[0-9]{5,7}$/;
 //     return validate(valid, 'mobileError', mobile);
 // }
-// function validateLandline() {
+// function this.validateLandline() {
 //     let landline = convertToInputElement(getElement('newLandline')).value;
 //     const valid = /^[0][0-9]{2,3}[\s]?[0-9]{3,4}[\s]?[0-9]{4}$/;
 //     return validate(valid, 'landlineError', landline);
 // }
-// function validateWebsite() {
+// function this.validateWebsite() {
 //     let website = convertToInputElement(getElement('newWebsite')).value;
 //     const valid = /^([https|http]:)?\/?\/?(www.)+[a-zA-Z0-9#!:?+=&%!.\-\/]+\.([a-zA-Z]+){2,}$/;
 //     return validate(valid, 'websiteError', website);
 // }
-// function validateAddress() {
+// function this.validateAddress() {
 //     let address = convertToInputElement(getElement('newAddress')).value;
-//     if (required(address)) {
+//     if (this.required(address)) {
 //         convertToHTMLElement(getElement('addressError')).innerHTML = "&nbsp;";
 //         return true;
 //     }
 //     else {
-//         convertToHTMLElement(getElement('addressError')).innerHTML = "Address is required";
+//         convertToHTMLElement(getElement('addressError')).innerHTML = "Address is this.required";
 //         return false;
 //     }
 // }
 // function validateForm() {
-//     let name = validateName();
+//     let name = this.validateName();
 //     let email = validateEmail();
-//     let mobile = validateMobile();
-//     let landline = validateLandline();
-//     let website = validateWebsite();
-//     let address = validateAddress();
+//     let mobile = this.validateMobile();
+//     let landline = this.validateLandline();
+//     let website = this.validateWebsite();
+//     let address = this.validateAddress();
 //     return (name && email && mobile && landline && website && address);
 // }

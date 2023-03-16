@@ -2,13 +2,16 @@ import React from "react";
 import "./contactForm.css";
 import { IContactFormProps, IContactFormState } from "./IContactForm";
 import { emptyContact } from "../../constants";
-import { validate, validateForm } from "./validations";
+import Validation from "./validations";
 import { Contact } from "../../model";
 import { Link} from "react-router-dom";
-import { getContactById } from "../../services/services";
+import { Services } from "../../services/services";
 import withRouter from "../withRouter";
 class ContactForm extends React.Component<IContactFormProps, IContactFormState>{
     private errorRef = React.createRef<HTMLHeadingElement>();
+    private formRef = React.createRef<HTMLFormElement>();
+    service = new Services();
+    validation = new Validation();
     constructor(props: IContactFormProps) {
         super(props);
         this.state = {
@@ -34,23 +37,23 @@ class ContactForm extends React.Component<IContactFormProps, IContactFormState>{
     }
     validate() {
         let newContact: Contact = this.state.contact;
-        let error: string = (validateForm(newContact));
+        let error: string = (this.validation.validateForm(newContact));
         this.setState({ formError: error, shouldValidate: true },
             () => {
                 return (this.state.formError === " \xa0 ") && this.props.operation(newContact)
             });
         this.moveToTop();
     }
-    handleInputChange(event: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLTextAreaElement>) {
+    async handleInputChange(event: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLTextAreaElement>) {
         let id: string = event.target.id;
         let value: string = event.target.value;
-        let error: string = validate(id, value);
+        let error: string = await this.validation.validate(id, value);
         let duplicateContact: Contact = { ...this.state.contact }
         let errorMessage: string;
         switch (id) {
             case "name":
                 duplicateContact.name = value;
-                errorMessage = validateForm(duplicateContact);
+                errorMessage = await this.validation.validateForm(duplicateContact);
                 this.setState({
                     nameError: error,
                     contact: duplicateContact,
@@ -59,7 +62,7 @@ class ContactForm extends React.Component<IContactFormProps, IContactFormState>{
                 break;
             case "email":
                 duplicateContact.email = value;
-                errorMessage = validateForm(duplicateContact);
+                errorMessage = await this.validation.validateForm(duplicateContact);
                 this.setState({
                     emailError: error,
                     contact: duplicateContact,
@@ -68,7 +71,7 @@ class ContactForm extends React.Component<IContactFormProps, IContactFormState>{
                 break;
             case "mobile":
                 duplicateContact.mobile = value;
-                errorMessage = validateForm(duplicateContact);
+                errorMessage = await this.validation.validateForm(duplicateContact);
                 this.setState({
                     mobileError: error,
                     contact: duplicateContact,
@@ -77,7 +80,7 @@ class ContactForm extends React.Component<IContactFormProps, IContactFormState>{
                 break;
             case "landline":
                 duplicateContact.landline = value;
-                errorMessage = validateForm(duplicateContact);
+                errorMessage = await this.validation.validateForm(duplicateContact);
                 this.setState({
                     landlineError: error,
                     contact: duplicateContact,
@@ -86,7 +89,7 @@ class ContactForm extends React.Component<IContactFormProps, IContactFormState>{
                 break;
             case "website":
                 duplicateContact.website = value;
-                errorMessage = validateForm(duplicateContact);
+                errorMessage = await this.validation.validateForm(duplicateContact);
                 this.setState({
                     websiteError: error,
                     contact: duplicateContact,
@@ -95,7 +98,7 @@ class ContactForm extends React.Component<IContactFormProps, IContactFormState>{
                 break;
             case "address":
                 duplicateContact.address = value;
-                errorMessage = validateForm(duplicateContact);
+                errorMessage = await this.validation.validateForm(duplicateContact);
                 this.setState({
                     addressError: error,
                     contact: duplicateContact,
@@ -105,8 +108,15 @@ class ContactForm extends React.Component<IContactFormProps, IContactFormState>{
         }
     }
     resetForm() {
+        let contact: Contact;
+        if(this.props.params.id=="Form"){
+            contact=emptyContact;
+        }
+        else{
+         contact= this.service.getContactById(this.props.contactList, this.props.params.id);
+        }
         this.setState({
-            contact: this.props.contact,
+            contact: contact,
             nameError: "\xa0",
             mobileError: "\xa0",
             emailError: "\xa0",
@@ -116,12 +126,13 @@ class ContactForm extends React.Component<IContactFormProps, IContactFormState>{
             formError: "\xa0",
             isAdd: !this.props.action,
         });
+        this.formRef.current?.reset();
         this.moveToTop();
     }
     componentDidMount(): void {
-        if (!this.state.isMounted) {
+        // if (!this.state.isMounted) {
             if (this.props.params.id!=="Form") {
-                let contact: Contact = getContactById(this.props.contactList, this.props.params.id);
+                let contact: Contact = this.service.getContactById(this.props.contactList, this.props.params.id);
                 this.setState({
                     contact: contact,
                     nameError: "\xa0",
@@ -135,7 +146,7 @@ class ContactForm extends React.Component<IContactFormProps, IContactFormState>{
                     isMounted: true,
                 });
             }
-        }
+        // }
     }
     componentDidUpdate(prevProps: IContactFormProps) {
         if (prevProps !== this.props) {
@@ -156,41 +167,41 @@ class ContactForm extends React.Component<IContactFormProps, IContactFormState>{
     render(): React.ReactNode {
         return (
             <div className="addForm">
-                <form className="detailsForm">
+                <form className="detailsForm" ref={this.formRef}>
                     <div className="formHeader">
                         <h3 className="formError" id="formError" ref={this.errorRef}>{this.state.shouldValidate && this.state.formError}</h3>
                         <Link to={this.props.contact === emptyContact ? "/" : "/details/" + this.props.contact.id}><img alt="" className="closeIcon" src={require("../../assets/close.png")} /></Link>
                     </div>
                     <div className="inputField">
                         <label>Name <sup>*</sup></label>
-                        <input type="text" id="name" onChange={(event) => this.handleInputChange(event)} value={this.state.contact.name} />
+                        <input type="text" id="name" onChange={(event) => this.handleInputChange(event)} defaultValue={this.state.contact.name}  />
                         <p className="error">{this.state.nameError}</p>
                     </div>
                     <div className="inputField">
                         <label>Email <sup>*</sup></label>
-                        <input type="text" id="email" onChange={(event) => this.handleInputChange(event)} value={this.state.contact.email} />
+                        <input type="text" id="email" onChange={(event) => this.handleInputChange(event)} defaultValue={this.state.contact.email} />
                         <p className="error">{this.state.emailError}</p>
                     </div>
                     <div className="inputField smallField">
                         <div className="smallInputField">
                             <label>Mobile <sup>*</sup></label>
-                            <input className="smallInputField" type="text" id="mobile" onChange={(event) => this.handleInputChange(event)} value={this.state.contact.mobile} />
+                            <input className="smallInputField" type="text" id="mobile" onChange={(event) => this.handleInputChange(event)} defaultValue={this.state.contact.mobile} />
                             <p className="error">{this.state.mobileError}</p>
                         </div>
                         <div className="smallInputField">
                             <label>Landline <sup>*</sup></label>
-                            <input className="smallInputField" type="text" id="landline" onChange={(event) => this.handleInputChange(event)} value={this.state.contact.landline} />
+                            <input className="smallInputField" type="text" id="landline" onChange={(event) => this.handleInputChange(event)} defaultValue={this.state.contact.landline} />
                             <p className="error">{this.state.landlineError}</p>
                         </div>
                     </div>
                     <div className="inputField">
                         <label>Website <sup>*</sup></label>
-                        <input type="text" id="website" onChange={(event) => this.handleInputChange(event)} value={this.state.contact.website} />
+                        <input type="text" id="website" onChange={(event) => this.handleInputChange(event)} defaultValue={this.state.contact.website} />
                         <p className="error">{this.state.websiteError}</p>
                     </div>
                     <div className="inputField">
                         <label>Address <sup>*</sup></label>
-                        <textarea className="address" id="address" onChange={(event) => this.handleInputChange(event)} value={this.state.contact.address}></textarea>
+                        <textarea className="address" id="address" onChange={(event) => this.handleInputChange(event)} defaultValue={this.state.contact.address}></textarea>
                         <p className="error">{this.state.addressError}</p>
                     </div>
                     <div className="submitField">

@@ -7,10 +7,11 @@ import ContactInfo from '../contactInfo/contactInfo';
 import ContactForm from '../contactForm/contactForm';
 import { IRouterProps,IRouterState } from './IMain';
 import { Contact } from '../../model';
-import { getContactById,deleteContactById,insertContact,updateContact} from '../../services/services';
+import { Services} from '../../services/services';
 import { initialContacts,emptyContact } from '../../constants';
 import {  Route, Routes, useNavigate } from 'react-router-dom';
 class Main extends React.Component<IRouterProps,IRouterState>{
+  service = new Services();
   constructor(props:IRouterProps){
     super(props);
     this.state={
@@ -22,8 +23,8 @@ class Main extends React.Component<IRouterProps,IRouterState>{
     editForm:false
     }
   }
-  handleTileClick(id:string){
-    let contact:Contact=getContactById(this.state.contactList,id);
+  async handleTileClick(id:string){
+    let contact:Contact= await this.service.getContactById(this.state.contactList,id);
     this.setState({ 
       activeContact:contact,
       showContactInfo:true,
@@ -40,8 +41,8 @@ class Main extends React.Component<IRouterProps,IRouterState>{
       activeContact:emptyContact
     });
   }
-  deleteContact(id:string){
-    let contactsAfterDelete:Contact[]=deleteContactById(this.state.contactList,id);
+  async deleteContact(id:string){
+    let contactsAfterDelete:Contact[]=await this.service.deleteContactById(this.state.contactList,id);
     this.setState({
       contactList:contactsAfterDelete,
       showContactInfo:false
@@ -56,8 +57,8 @@ class Main extends React.Component<IRouterProps,IRouterState>{
       editForm:true
     });
   }
-  addContact(contact:Contact){
-    let contactsAfterAdd:Contact[]=insertContact(this.state.contactList,contact);
+  async addContact(contact:Contact){
+    let contactsAfterAdd:Contact[]= await this.service.insertContact(this.state.contactList,contact);
       this.setState({
         contactList:contactsAfterAdd,
         activeContact:contact,
@@ -66,8 +67,8 @@ class Main extends React.Component<IRouterProps,IRouterState>{
       });
     this.props.navigate("/details/"+contactsAfterAdd[contactsAfterAdd.length-1].id);
   }
-  editContact(newContact:Contact){
-    let contactsAfterUpdating:Contact[]=updateContact(newContact,this.state.contactList);
+  async editContact(newContact:Contact){
+    let contactsAfterUpdating:Contact[]= await this.service.updateContact(newContact,this.state.contactList);
     this.setState({
       contactList:contactsAfterUpdating,
       activeContact:newContact,

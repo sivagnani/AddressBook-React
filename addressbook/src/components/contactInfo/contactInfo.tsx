@@ -2,11 +2,12 @@ import React from "react";
 import "./contactInfo.css";
 import { IContactInfoProps, IContactInfoState } from "./IContactInfo";
 import { Link} from "react-router-dom";
-import { getContactById } from "../../services/services";
+import { Services } from "../../services/services";
 import { Contact } from "../../model";
 import withRouter from "../withRouter";
 import { emptyContact } from "../../constants";
 class ContactInfo extends React.Component<IContactInfoProps, IContactInfoState>{
+    service = new Services();
     constructor(props: IContactInfoProps){
         super(props);
         this.state={
@@ -16,13 +17,13 @@ class ContactInfo extends React.Component<IContactInfoProps, IContactInfoState>{
     }
     componentDidMount(): void {
         if(!this.state.isMounted){
-            let contact:Contact=getContactById(this.props.contactList,this.props.params.id);
+            let contact:Contact=this.service.getContactById(this.props.contactList,this.props.params.id);
             this.setState({contact:contact,isMounted:true});
         }
     }
     componentDidUpdate(prevProps: Readonly<IContactInfoProps>, prevState: Readonly<IContactInfoState>, snapshot?: any): void {
         if(prevProps!==this.props){
-            let contact:Contact=getContactById(this.props.contactList,this.props.params.id);
+            let contact:Contact=this.service.getContactById(this.props.contactList,this.props.params.id);
             this.setState({contact:contact});
         }
     }
